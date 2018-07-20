@@ -2,6 +2,7 @@ package git.inhostudios.dtba;
 
 import java.util.ArrayList;
 
+import git.inhostudios.dtba.gameobjects.Game;
 import git.inhostudios.dtba.gameobjects.Inventory;
 import git.inhostudios.dtba.gameobjects.Player;
 import net.dv8tion.jda.core.AccountType;
@@ -16,11 +17,15 @@ import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 public class Main extends ListenerAdapter {
 
-	private ArrayList<Player> players = new ArrayList<Player>();
+	private static ArrayList<Player> players = new ArrayList<Player>();
+	static Game game;
 	
 	public static void main(String[] args) throws Exception{
 		JDA jda = new JDABuilder(AccountType.BOT).setToken(Globals.token).buildBlocking();
 		jda.addEventListener(new Main());
+		
+		game = new Game();
+		players = game.getPlayers();
 	}
 	
 	public void onMessageReceived(MessageReceivedEvent event) {
@@ -35,18 +40,47 @@ public class Main extends ListenerAdapter {
 			if(input.startsWith(Globals.prefix + command)) {
 				// getting a command
 				
+				Player userPlayer = null;
+				
+				if(playerExists(user)) {
+					userPlayer = getPlayerByUser(user);
+				}
+				
+				// help
+				if(command.equalsIgnoreCase(Globals.help)) {
+					ch.sendMessage("```\neon.help: \nregister - Create a new player\ntrade [Player name] [Item] - Start a trade with another player\n```").queue();
+				} else				
+					
+				// SINGLE ARGUMENT COMMANDS
+					
 				// register a player
 				if(command.equalsIgnoreCase(Globals.register)) {
-					for(int i = 0; i < players.size(); i++) {
-						if(players.get(i).getUser().equals(user)) {
-							ch.sendMessage("User already exists.").queue();
-							return;
-						}
+					if(playerExists(user)) {
+						ch.sendMessage("User already exists.").queue();
+						return;
+					} else {
+						Player player = new Player(user, new Inventory(), 0);
+						game.addPlayer(player);
+						ch.sendMessage("User added!").queue();
 					}
-					Player player = new Player(user, new Inventory(), 0);
-					players.add(player);
-					ch.sendMessage("User added!").queue();
-				} else {
+				} else 
+				// get name
+				if(command.equalsIgnoreCase(Globals.name)){
+					if(playerExists(user)) {
+						ch.sendMessage("Your name is " + userPlayer.getName()).queue();
+					}
+				} else 
+				// get stats
+				if(command.equalsIgnoreCase(Globals.stats)){
+					if(playerExists(user)) {
+						ch.sendMessage("```\n" + userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nBalance: " + userPlayer.getBalance() + "\n```").queue();
+					}
+				} else
+					
+				// MULTI ARGUMENT COMMANDS
+					
+				// start a quest
+				{
 					ch.sendMessage("Command not found").queue();
 				}
 				
@@ -63,6 +97,26 @@ public class Main extends ListenerAdapter {
                         event.getTextChannel().getName(), event.getMember().getEffectiveName(),
                         event.getMessage().getContentDisplay());
         }
+	}
+	
+	private boolean playerExists(User user) {
+		players = game.getPlayers();
+		for(int i = 0; i < players.size(); i++) {
+			if(players.get(i).getUser().equals(user)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private Player getPlayerByUser(User user) {
+		players = game.getPlayers();
+		for(int i = 0; i < players.size(); i++) {
+			if(players.get(i).getUser().equals(user)) {
+				return players.get(i);
+			}
+		}
+		return null;
 	}
 
 }

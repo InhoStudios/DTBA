@@ -8,11 +8,21 @@ public class Player {
 	private Inventory inventory;
 	private int level, levelcap = 50, balance;
 	private double xp;
+	private String name;
 	
 	public Player(User user, Inventory inventory, int level) {
 		this.user = user;
 		this.inventory = inventory;
 		this.level = level;
+		this.name = user.getName();
+	}
+	
+	public String getName() {
+		return name;
+	}
+	
+	public void setName(String name) {
+		this.name = name;
 	}
 	
 	public User getUser() {
