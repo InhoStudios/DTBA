@@ -75,7 +75,7 @@ public class Main extends ListenerAdapter {
 					if(playerExists(user)) {
 						ch.sendMessage(formatString(userPlayer.getName())).queue();
 					} else {
-						ch.sendMessage("Player doesn't exist. Use eon.register to create a new player").queue();
+						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
 					}
 				} else 
 				// get stats
@@ -83,7 +83,7 @@ public class Main extends ListenerAdapter {
 					if(playerExists(user)) {
 						ch.sendMessage(formatString(userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nBalance: " + userPlayer.getBalance())).queue();
 					} else {
-						ch.sendMessage("Player doesn't exist. Use eon.register to create a new player").queue();
+						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
 					}
 				} else
 					

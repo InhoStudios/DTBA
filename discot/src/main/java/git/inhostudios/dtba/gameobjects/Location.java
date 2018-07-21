@@ -5,11 +5,14 @@ import java.util.ArrayList;
 public class Location {
 
 	private ArrayList<SubLocation> spots = new ArrayList<SubLocation>();
-	private int distance;
+	private int distance = 0;
 	
-	public Location(ArrayList<SubLocation> spots, int distance) {
-		this.spots = spots;
+	public Location(int distance) {
 		this.distance = distance;
+	}
+	
+	public void addSubLocation(SubLocation sub) {
+		spots.add(sub);
 	}
 	
 }
