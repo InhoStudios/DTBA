@@ -1,5 +1,6 @@
 package git.inhostudios.dtba;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import git.inhostudios.dtba.gameobjects.Game;
@@ -38,9 +39,21 @@ public class Main extends ListenerAdapter {
 			String command = input.substring(Globals.prefix.length());
 			
 			if(input.startsWith(Globals.prefix + command)) {
-				// getting a command
 				
-				Player userPlayer = null;
+				// checking and reading previous players
+				String userFileDir = Globals.filePath + "\\" + user.getId() + ".json";
+				File f = new File(userFileDir);
+				Player userPlayer = new Player(user.getId(), user.getName());
+				
+				if(f.exists()) {
+					game.read(userPlayer);
+					game.addPlayer(userPlayer);
+				} else {
+					userPlayer = new Player(user.getId(), user.getName(), new ArrayList<Item>(), 0);
+					game.savePlayer(userPlayer);
+				}
+				
+				// getting a command
 				
 				if(playerExists(user)) {
 					userPlayer = getPlayerByUser(user);
@@ -49,13 +62,13 @@ public class Main extends ListenerAdapter {
 				// help
 				if(command.equalsIgnoreCase(Globals.help)) {
 					ch.sendMessage(formatString(
-							"eon.help: "
-							+ "\nregister - Create a new player"
-							+ "\nname - Find your in game name"
-							+ "\nstats - See your in game stats"
-							+ "\nchange-name [New Name] - Change your player's name"
-							+ "\nquest-list - Shows the current quests"
-							+ "\nsuicide - Kill your player for a fresh start"
+							"eon.help: \n"
+							+ Globals.register + " - Create a new player\n"
+							+ Globals.name + " - Find your in game name\n"
+							+ Globals.stats + " - See your in game stats\n"
+							+ Globals.changeName + " [New Name] - Change your player's name\n"
+							+ Globals.questList + " - Shows the current quests\n"
+							+ Globals.suicide + " - Kill your player for a fresh start\n"
 							)).queue();
 				} else				
 					
@@ -68,10 +81,14 @@ public class Main extends ListenerAdapter {
 						return;
 					} else {
 						ArrayList<Item> inv = new ArrayList<Item>();
-						Player player = new Player(user.getId(), user.getName(), inv, 0);
-						//game.read(player);
+						Player player = userPlayer;
+						try{
+							game.read(player);
+						} catch(Exception e) {
+							e.printStackTrace();
+						}
 						game.addPlayer(player);
-						//game.savePlayer(player);
+						game.savePlayer(player);
 						ch.sendMessage(formatString("Player added!")).queue();
 					}
 				} else 
@@ -145,6 +162,8 @@ public class Main extends ListenerAdapter {
 				{
 					ch.sendMessage(formatString("Command not found")).queue();
 				}
+				game.savePlayer(userPlayer);
+				game.read(userPlayer);
 			}
 		}
 		

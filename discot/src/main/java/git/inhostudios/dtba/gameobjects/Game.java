@@ -10,8 +10,10 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
+
+import git.inhostudios.dtba.Globals;
 
 public class Game {
 
@@ -140,16 +142,16 @@ public class Game {
 	}
 	
 	
-	public static void savePlayer(Player player) {
-		String fileName = player.getName() + ".json";
-		String userName = player.toJson();
-		File Old = new File("/" + fileName);
+	public void savePlayer(Player player) {
+		String fileName = player.getUserID() + ".json";
+		String userInfo = player.toJson();
+		File Old = new File(Globals.filePath + "\\" + fileName);
 		Old.delete();
-		File New = new File("/" + fileName);
+		File New = new File(Globals.filePath + "\\" + fileName);
 		
 		try {
 			PrintWriter out = new PrintWriter(New);
-			out.write(userName);
+			out.write(userInfo);
 			out.close();
 		}catch(Exception e) {
 			e.printStackTrace();
@@ -161,22 +163,23 @@ public class Game {
 		return new String(encoded, encoding);
 	}
 	
-	public static void read(Player player) {
-		String fileName = player.getName() + ".json";
+	public String read(Player player) {
+		String fileName = player.getUserID() + ".json";
 		
 		JsonParser parser = new JsonParser();
 		
 		String output = "";
 		try {
-			output = readFile("/" + fileName, StandardCharsets.UTF_8);
+			output = readFile(Globals.filePath + "\\" + fileName, StandardCharsets.UTF_8);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
 		player.fromJson(output);
 		
 		System.out.println(output);
+		
+		return output;
 	}
 	
 }

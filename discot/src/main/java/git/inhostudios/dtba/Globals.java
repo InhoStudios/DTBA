@@ -3,6 +3,7 @@ package git.inhostudios.dtba;
 public class Globals {
 
 	public static final String token = "NDY5OTI5ODQ0OTAyMzMwMzg4.DjO7uw.vNsshdi4ULnlh9ITiCnbpRrCGik";
+	public static final String filePath = System.getProperty("user.dir") +  "\\save";
 	
 	// command prefix
 	public static final String prefix = "eon.";
@@ -16,6 +17,6 @@ public class Globals {
 	public static final String suicide = "suicide";
 	
 		// multi word
-	public static final String changeName = "change-name";
-	public static final String questList = "quest-list";
+	public static final String changeName = "changename";
+	public static final String questList = "questlist";
 }

@@ -1,5 +1,6 @@
 package git.inhostudios.dtba.gameobjects;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import com.google.gson.Gson;
@@ -24,6 +25,12 @@ public class Player {
 		this.userID = userID;
 		this.inventory = inventory;
 		this.level = level;
+		this.name = userName;
+	}
+	
+	// checking constructor
+	public Player(String userID, String userName) {
+		this.userID = userID;
 		this.name = userName;
 	}
 	
@@ -56,6 +63,10 @@ public class Player {
 		return inventory;
 	}
 	
+	public void setInventory(ArrayList<Item> inventory) {
+		this.inventory = inventory;
+	}
+	
 	public int getLevel() {
 		return level;
 	}
@@ -79,7 +90,7 @@ public class Player {
 		return gson.toJson(this);
 	}
 	
-	public static Player fromJson(String json) {
+	public Player fromJson(String json) {
 		
 		Gson gson = new Gson();
 
@@ -87,7 +98,7 @@ public class Player {
     	JsonObject jo = jp.parse(json).getAsJsonObject();
     	
     	String imUserID = jo.get("userID").getAsString();
-		ArrayList<Item> imInventory = gson.fromJson(jo, new TypeToken<ArrayList<Item>>() {}.getType());
+		ArrayList<Item> imInventory = new ArrayList<Item>();
 		int imLevel = jo.get("level").getAsInt();
 		int imLevelcap = jo.get("levelcap").getAsInt();
 		int imBalance = jo.get("balance").getAsInt();
