@@ -1,22 +1,9 @@
 package git.inhostudios.dtba;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.google.gson.reflect.TypeToken;
-
 import git.inhostudios.dtba.gameobjects.Game;
-import git.inhostudios.dtba.gameobjects.Inventory;
+import git.inhostudios.dtba.gameobjects.Item;
 import git.inhostudios.dtba.gameobjects.Player;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
@@ -77,10 +64,11 @@ public class Main extends ListenerAdapter {
 				// register a player
 				if(command.equalsIgnoreCase(Globals.register)) {
 					if(playerExists(user)) {
-						ch.sendMessage(formatString("Player already exists.")).queue();
+						ch.sendMessage(formatString("Player already exists with id " + getPlayerByUser(user).getUserID())).queue();
 						return;
 					} else {
-						Player player = new Player(user, new Inventory(), 0);
+						ArrayList<Item> inv = new ArrayList<Item>();
+						Player player = new Player(user.getId(), user.getName(), inv, 0);
 						//game.read(player);
 						game.addPlayer(player);
 						//game.savePlayer(player);
@@ -117,7 +105,7 @@ public class Main extends ListenerAdapter {
 					if(playerExists(user)) {
 						players = game.getPlayers();
 						for(int i = 0; i < players.size(); i++) {
-							if(players.get(i).getUser().equals(user)) {
+							if(players.get(i).getUserID().equals(user.getId())) {
 								players.remove(i);
 								ch.sendMessage(formatString("You killed yourself\nX_X")).queue();
 								return;
@@ -136,10 +124,14 @@ public class Main extends ListenerAdapter {
 					if(playerExists(user)) {
 						String name;
 						int cnLength = Globals.changeName.length();
-						if(command.substring(cnLength, cnLength + 1).equalsIgnoreCase(" ")) {
-							name = command.substring(cnLength + 1);
-							getPlayerByUser(user).setName(name);
-							ch.sendMessage(formatString("Name changed to " + name)).queue();
+						if(command.length() > cnLength) {
+							if(command.substring(cnLength, cnLength + 1).equalsIgnoreCase(" ")) {
+								name = command.substring(cnLength + 1);
+								getPlayerByUser(user).setName(name);
+								ch.sendMessage(formatString("Name changed to " + name)).queue();
+							} else {
+								ch.sendMessage(formatString("Not enough arguments to function. Proper use: change-name [New Name]")).queue();
+							}
 						} else {
 							ch.sendMessage(formatString("Not enough arguments to function. Proper use: change-name [New Name]")).queue();
 						}
@@ -170,7 +162,7 @@ public class Main extends ListenerAdapter {
 	private boolean playerExists(User user) {
 		players = game.getPlayers();
 		for(int i = 0; i < players.size(); i++) {
-			if(players.get(i).getUser().equals(user)) {
+			if(players.get(i).getUserID().equals(user.getId())) {
 				return true;
 			}
 		}
@@ -180,7 +172,7 @@ public class Main extends ListenerAdapter {
 	private Player getPlayerByUser(User user) {
 		players = game.getPlayers();
 		for(int i = 0; i < players.size(); i++) {
-			if(players.get(i).getUser().equals(user)) {
+			if(players.get(i).getUserID().equals(user.getId())) {
 				return players.get(i);
 			}
 		}
@@ -190,45 +182,6 @@ public class Main extends ListenerAdapter {
 	private String formatString(String text) {
 		return ("```" + text + "```");
 	}
-//
-//	public static void savePlayer(Player player) {
-//		String fileName = player.getName() + ".json";
-//		String userName = player.toJson();
-//		File Old = new File("../Save/" + fileName);
-//		Old.delete();
-//		File New = new File("../Save/" + fileName);
-//		
-//		try {
-//			PrintWriter out = new PrintWriter(New);
-//			out.write(userName);
-//			out.close();
-//		}catch(Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
-//	
-//	public static String readFile(String path, Charset encoding) throws IOException {
-//		byte[] encoded = Files.readAllBytes(Paths.get(path));
-//		return new String(encoded, encoding);
-//	}
-//	
-//	public static void read() {
-//		JsonParser parser = new JsonParser();
-//		
-//		String output = "";
-//		try {
-//			output = readFile("../Save/" + localFilename, StandardCharsets.UTF_8);
-//		} catch (IOException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		JsonElement obj = parser.parse(output);
-//		localSave = obj.getAsJsonArray(); 
-//		
-//		Gson gson = new Gson();
-//		playerchain = gson.fromJson(output, new TypeToken<ArrayList<Block>>(){}.getType());
-//		
-//		System.out.println("Save read!");
-//	}
+
 	
 }

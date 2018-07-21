@@ -1,28 +1,35 @@
 package git.inhostudios.dtba.gameobjects;
 
+import java.util.ArrayList;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import net.dv8tion.jda.core.entities.User;
 
 public class Player {
 
-	private User user;
-	private Inventory inventory;
+	// change from user to userid
+	private String userID;
 	private int level, levelcap = 50, balance, hp, maxhp = 15;
 	private double xp;
 	private String name;
 	
-	public Player(User user, Inventory inventory, int level) {
-		this.user = user;
+	private ArrayList<Item> inventory;
+	
+	// creation constructor
+	public Player(String userID, String userName, ArrayList<Item> inventory, int level) {
+		this.userID = userID;
 		this.inventory = inventory;
 		this.level = level;
-		this.name = user.getName();
+		this.name = userName;
 	}
 	
-	public Player(User user, Inventory inventory, int level, int levelcap, int balance, int hp, int maxhp, double xp, String name) {
-		this.user = user;
+	// reimport constructor
+	public Player(String userID, String userName, ArrayList<Item> inventory, int level, int levelcap, int balance, int hp, int maxhp, double xp) {
+		this.userID = userID;
 		this.inventory = inventory;
 		this.level = level;
 		this.levelcap = levelcap;
@@ -30,7 +37,7 @@ public class Player {
 		this.hp = hp;
 		this.maxhp = maxhp;
 		this.xp = xp;
-		this.name = name;
+		this.name = userName;
 	}
 	
 	public String getName() {
@@ -41,11 +48,11 @@ public class Player {
 		this.name = name;
 	}
 	
-	public User getUser() {
-		return user;
+	public String getUserID() {
+		return userID;
 	}
 	
-	public Inventory getInventory() {
+	public ArrayList<Item> getInventory() {
 		return inventory;
 	}
 	
@@ -79,8 +86,8 @@ public class Player {
     	JsonParser jp = new JsonParser();
     	JsonObject jo = jp.parse(json).getAsJsonObject();
     	
-    	User imUser = gson.fromJson(jo, User.class);
-		Inventory imInv = gson.fromJson(jo, Inventory.class);
+    	String imUserID = jo.get("userID").getAsString();
+		ArrayList<Item> imInventory = gson.fromJson(jo, new TypeToken<ArrayList<Item>>() {}.getType());
 		int imLevel = jo.get("level").getAsInt();
 		int imLevelcap = jo.get("levelcap").getAsInt();
 		int imBalance = jo.get("balance").getAsInt();
@@ -89,7 +96,7 @@ public class Player {
 		double imXp = jo.get("xp").getAsDouble();
 		String imName = jo.get("name").getAsString();
     	
-    	Player output = new Player(imUser,imInv,imLevel,imLevelcap,imBalance,imHp,imMaxhp,imXp,imName);
+    	Player output = new Player(imUserID,imName,imInventory,imLevel,imLevelcap,imBalance,imHp,imMaxhp,imXp);
     	
     	return output;
 	}
