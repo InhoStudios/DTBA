@@ -17,6 +17,7 @@ public class Game {
 	private SubLocation sisadea, aldrox, stylox, axnor, xleon; // galei
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private Quest tavernEspionage;
 	private ArrayList<Quest> quests = new ArrayList<Quest>();
 	
 	public Game() {
@@ -32,10 +33,24 @@ public class Game {
 		return players;
 	}
 	
-	private void addAndInitLocations() {
+	public String getQuests() {
 		
+		tavernEspionage = new Quest("Tavern Espionage");
+		
+		quests.add(tavernEspionage);
+		
+		String questTitles = "Quests: ";
+		
+		for(int i = 0; i < quests.size(); i++) {
+			questTitles = questTitles + "\n- " + quests.get(i).getQuestTitle();
+		}
+		
+		return questTitles;
+	}
+	
+	private void addAndInitLocations() {
 		// pureia
-		pureia = new Location(0);
+		pureia = new Location(5);
 		
 			trixn = new SubLocation("Trixn");
 		pureia.addSubLocation(trixn);
@@ -100,14 +115,17 @@ public class Game {
 			stylox = new SubLocation("Stylox");
 		galei.addSubLocation(stylox);
 		
-			kypovia = new SubLocation("Kypovia");
-		galei.addSubLocation(kypovia);
+			axnor = new SubLocation("Axnor");
+		galei.addSubLocation(axnor);
+			
+			xleon = new SubLocation("Xleon");
+		galei.addSubLocation(xleon);
 		
-		map.addLocation(pureia);
-		map.addLocation(mykovia);
-		map.addLocation(excelsior);
-		map.addLocation(munea);
-		map.addLocation(galei);
+//		map.addLocation(pureia);
+//		map.addLocation(mykovia);
+//		map.addLocation(excelsior);
+//		map.addLocation(munea);
+//		map.addLocation(galei);
 	}
 	
 }

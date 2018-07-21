@@ -13,4 +13,7 @@ public class Globals {
 	public static final String name = "name";
 	public static final String stats = "stats";
 	
+	public static final String changeName = "change-name";
+	
+	public static final String questList = "quest-list";
 }

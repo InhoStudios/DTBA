@@ -53,7 +53,8 @@ public class Main extends ListenerAdapter {
 							+ "\nregister - Create a new player"
 							+ "\nname - Find your in game name"
 							+ "\nstats - See your in game stats"
-							+ "\ntrade [Player name] [Item] - Start a trade with another player"
+							+ "\nchange-name [New Name] - Change your player's name"
+							+ "\nquest-list - Shows the current quests"
 							)).queue();
 				} else				
 					
@@ -81,7 +82,16 @@ public class Main extends ListenerAdapter {
 				// get stats
 				if(command.equalsIgnoreCase(Globals.stats)){
 					if(playerExists(user)) {
-						ch.sendMessage(formatString(userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nBalance: " + userPlayer.getBalance())).queue();
+						ch.sendMessage(formatString(userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nCoins: " + userPlayer.getBalance())).queue();
+					} else {
+						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
+					}
+				} else
+				// quest list
+				if(command.equalsIgnoreCase(Globals.questList)){
+					String quests = game.getQuests();
+					if(playerExists(user)) {
+						ch.sendMessage(formatString(quests)).queue();	
 					} else {
 						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
 					}
@@ -89,12 +99,28 @@ public class Main extends ListenerAdapter {
 					
 				// MULTI ARGUMENT COMMANDS
 					
-				// start a quest
+				// change name
+				if(command.contains(Globals.changeName)){
+					if(playerExists(user)) {
+						String name;
+						int cnLength = Globals.changeName.length();
+						if(command.substring(cnLength, cnLength + 1).equalsIgnoreCase(" ")) {
+							name = command.substring(cnLength + 1);
+							getPlayerByUser(user).setName(name);
+							ch.sendMessage(formatString("Name changed to " + name)).queue();
+						} else {
+							ch.sendMessage(formatString("Not enough arguments to function. Proper use: change-name [New Name]")).queue();
+						}
+					} else {
+						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
+					}
+				}
+				
+				// no command
+				else
 				{
 					ch.sendMessage(formatString("Command not found")).queue();
 				}
-				
-				// trade
 			}
 		}
 		
@@ -130,7 +156,7 @@ public class Main extends ListenerAdapter {
 	}
 	
 	private String formatString(String text) {
-		return ("```\n" + text + "\n```");
+		return ("```" + text + "```");
 	}
 
 }
