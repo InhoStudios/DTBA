@@ -1,6 +1,17 @@
 package git.inhostudios.dtba.gameobjects;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
 public class Game {
 
@@ -126,6 +137,46 @@ public class Game {
 //		map.addLocation(excelsior);
 //		map.addLocation(munea);
 //		map.addLocation(galei);
+	}
+	
+	
+	public static void savePlayer(Player player) {
+		String fileName = player.getName() + ".json";
+		String userName = player.toJson();
+		File Old = new File("/" + fileName);
+		Old.delete();
+		File New = new File("/" + fileName);
+		
+		try {
+			PrintWriter out = new PrintWriter(New);
+			out.write(userName);
+			out.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static String readFile(String path, Charset encoding) throws IOException {
+		byte[] encoded = Files.readAllBytes(Paths.get(path));
+		return new String(encoded, encoding);
+	}
+	
+	public static void read(Player player) {
+		String fileName = player.getName() + ".json";
+		
+		JsonParser parser = new JsonParser();
+		
+		String output = "";
+		try {
+			output = readFile("/" + fileName, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		player.fromJson(output);
+		
+		System.out.println(output);
 	}
 	
 }

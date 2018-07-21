@@ -1,6 +1,19 @@
 package git.inhostudios.dtba;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import git.inhostudios.dtba.gameobjects.Game;
 import git.inhostudios.dtba.gameobjects.Inventory;
@@ -68,7 +81,9 @@ public class Main extends ListenerAdapter {
 						return;
 					} else {
 						Player player = new Player(user, new Inventory(), 0);
+						//game.read(player);
 						game.addPlayer(player);
+						game.savePlayer(player);
 						ch.sendMessage(formatString("Player added!")).queue();
 					}
 				} else 
@@ -175,5 +190,45 @@ public class Main extends ListenerAdapter {
 	private String formatString(String text) {
 		return ("```" + text + "```");
 	}
-
+//
+//	public static void savePlayer(Player player) {
+//		String fileName = player.getName() + ".json";
+//		String userName = player.toJson();
+//		File Old = new File("../Save/" + fileName);
+//		Old.delete();
+//		File New = new File("../Save/" + fileName);
+//		
+//		try {
+//			PrintWriter out = new PrintWriter(New);
+//			out.write(userName);
+//			out.close();
+//		}catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//	}
+//	
+//	public static String readFile(String path, Charset encoding) throws IOException {
+//		byte[] encoded = Files.readAllBytes(Paths.get(path));
+//		return new String(encoded, encoding);
+//	}
+//	
+//	public static void read() {
+//		JsonParser parser = new JsonParser();
+//		
+//		String output = "";
+//		try {
+//			output = readFile("../Save/" + localFilename, StandardCharsets.UTF_8);
+//		} catch (IOException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		JsonElement obj = parser.parse(output);
+//		localSave = obj.getAsJsonArray(); 
+//		
+//		Gson gson = new Gson();
+//		playerchain = gson.fromJson(output, new TypeToken<ArrayList<Block>>(){}.getType());
+//		
+//		System.out.println("Save read!");
+//	}
+	
 }
