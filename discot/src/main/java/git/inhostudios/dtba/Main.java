@@ -55,6 +55,7 @@ public class Main extends ListenerAdapter {
 							+ "\nstats - See your in game stats"
 							+ "\nchange-name [New Name] - Change your player's name"
 							+ "\nquest-list - Shows the current quests"
+							+ "\nsuicide - Kill your player for a fresh start"
 							)).queue();
 				} else				
 					
@@ -92,6 +93,22 @@ public class Main extends ListenerAdapter {
 					String quests = game.getQuests();
 					if(playerExists(user)) {
 						ch.sendMessage(formatString(quests)).queue();	
+					} else {
+						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
+					}
+				} else
+				// suicide
+				if(command.equalsIgnoreCase(Globals.suicide)) {
+					if(playerExists(user)) {
+						players = game.getPlayers();
+						for(int i = 0; i < players.size(); i++) {
+							if(players.get(i).getUser().equals(user)) {
+								players.remove(i);
+								ch.sendMessage(formatString("You killed yourself\nX_X")).queue();
+								return;
+							}
+						}	
+						ch.sendMessage(formatString("Unable to kill yourself. You are too weak")).queue();
 					} else {
 						ch.sendMessage(formatString("Player doesn't exist. Use eon.register to create a new player")).queue();
 					}
