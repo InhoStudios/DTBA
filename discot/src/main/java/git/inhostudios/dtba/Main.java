@@ -48,7 +48,13 @@ public class Main extends ListenerAdapter {
 				
 				// help
 				if(command.equalsIgnoreCase(Globals.help)) {
-					ch.sendMessage("```\neon.help: \nregister - Create a new player\ntrade [Player name] [Item] - Start a trade with another player\n```").queue();
+					ch.sendMessage(formatString(
+							"eon.help: "
+							+ "\nregister - Create a new player"
+							+ "\nname - Find your in game name"
+							+ "\nstats - See your in game stats"
+							+ "\ntrade [Player name] [Item] - Start a trade with another player"
+							)).queue();
 				} else				
 					
 				// SINGLE ARGUMENT COMMANDS
@@ -56,24 +62,28 @@ public class Main extends ListenerAdapter {
 				// register a player
 				if(command.equalsIgnoreCase(Globals.register)) {
 					if(playerExists(user)) {
-						ch.sendMessage("User already exists.").queue();
+						ch.sendMessage(formatString("Player already exists.")).queue();
 						return;
 					} else {
 						Player player = new Player(user, new Inventory(), 0);
 						game.addPlayer(player);
-						ch.sendMessage("User added!").queue();
+						ch.sendMessage(formatString("Player added!")).queue();
 					}
 				} else 
 				// get name
 				if(command.equalsIgnoreCase(Globals.name)){
 					if(playerExists(user)) {
-						ch.sendMessage("Your name is " + userPlayer.getName()).queue();
+						ch.sendMessage(formatString(userPlayer.getName())).queue();
+					} else {
+						ch.sendMessage("Player doesn't exist. Use eon.register to create a new player").queue();
 					}
 				} else 
 				// get stats
 				if(command.equalsIgnoreCase(Globals.stats)){
 					if(playerExists(user)) {
-						ch.sendMessage("```\n" + userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nBalance: " + userPlayer.getBalance() + "\n```").queue();
+						ch.sendMessage(formatString(userPlayer.getName() + "'s Stats\nLevel: " + userPlayer.getLevel() + "\nBalance: " + userPlayer.getBalance())).queue();
+					} else {
+						ch.sendMessage("Player doesn't exist. Use eon.register to create a new player").queue();
 					}
 				} else
 					
@@ -81,7 +91,7 @@ public class Main extends ListenerAdapter {
 					
 				// start a quest
 				{
-					ch.sendMessage("Command not found").queue();
+					ch.sendMessage(formatString("Command not found")).queue();
 				}
 				
 				// trade
@@ -117,6 +127,10 @@ public class Main extends ListenerAdapter {
 			}
 		}
 		return null;
+	}
+	
+	private String formatString(String text) {
+		return ("```\n" + text + "\n```");
 	}
 
 }

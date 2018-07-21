@@ -6,7 +6,7 @@ public class Player {
 
 	private User user;
 	private Inventory inventory;
-	private int level, levelcap = 50, balance;
+	private int level, levelcap = 50, balance, hp, maxhp = 15;
 	private double xp;
 	private String name;
 	
@@ -46,6 +46,7 @@ public class Player {
 			level++;
 			levelcap *= 1.25;
 			xp = 0;
+			maxhp += 5;
 		}
 	}
 	
