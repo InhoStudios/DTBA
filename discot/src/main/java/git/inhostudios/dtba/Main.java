@@ -83,7 +83,7 @@ public class Main extends ListenerAdapter {
 						Player player = new Player(user, new Inventory(), 0);
 						//game.read(player);
 						game.addPlayer(player);
-						game.savePlayer(player);
+						//game.savePlayer(player);
 						ch.sendMessage(formatString("Player added!")).queue();
 					}
 				} else 
