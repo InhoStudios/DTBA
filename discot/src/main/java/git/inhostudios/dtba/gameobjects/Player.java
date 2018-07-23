@@ -91,8 +91,6 @@ public class Player {
 	}
 	
 	public Player fromJson(String json) {
-		
-		Gson gson = new Gson();
 
     	JsonParser jp = new JsonParser();
     	JsonObject jo = jp.parse(json).getAsJsonObject();

@@ -22,7 +22,7 @@ public class Main extends ListenerAdapter {
 	static Game game;
 	
 	public static void main(String[] args) throws Exception{
-		JDA jda = new JDABuilder(AccountType.BOT).setToken(Globals.token).buildBlocking();
+		JDA jda = new JDABuilder(AccountType.BOT).setToken(Token.token).buildBlocking();
 		jda.addEventListener(new Main());
 		
 		game = new Game();
