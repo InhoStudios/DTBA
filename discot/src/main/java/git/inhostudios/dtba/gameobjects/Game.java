@@ -1,6 +1,7 @@
 package git.inhostudios.dtba.gameobjects;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
@@ -145,22 +146,53 @@ public class Game {
 	public void savePlayer(Player player) {
 		String fileName = player.getUserID() + ".json";
 		String userInfo = player.toJson();
-		File Old = new File(Globals.filePath + "\\" + fileName);
+		String path = Globals.filePath + "\\" + fileName;
+		File Old = new File(path);
 		Old.delete();
-		File New = new File(Globals.filePath + "\\" + fileName);
 		
 		try {
-			PrintWriter out = new PrintWriter(New);
+			FileWriter out = new FileWriter(path);
 			out.write(userInfo);
+			out.flush();
 			out.close();
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
 	}
 	
+	public void killPlayer(Player player) {
+		String fileName = player.getUserID() + ".json";
+		String path = Globals.filePath + "\\" + fileName;
+		File Old = new File(path);
+		Old.delete();
+		
+		System.out.println("Player file deleted at " + path);
+	}
+	
 	public static String readFile(String path, Charset encoding) throws IOException {
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		return new String(encoded, encoding);
+	}
+	
+	public String createPlayer(Player player) {
+		String fileName = player.getUserID() + ".json";
+		
+		JsonParser parser = new JsonParser();
+		String path = Globals.filePath + "\\" + fileName;
+		
+		String output = "";
+		try {
+			output = readFile(path, StandardCharsets.UTF_8);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		player.fromJson(output);
+		
+		System.out.println("Reading player from " + path);
+		System.out.println(output);
+		
+		return output;
 	}
 	
 	public String read(Player player) {
@@ -177,7 +209,7 @@ public class Game {
 		
 		player.fromJson(output);
 		
-		System.out.println(output);
+		System.out.println("Reading " + output);
 		
 		return output;
 	}

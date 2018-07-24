@@ -29,6 +29,10 @@ public class Player {
 	}
 	
 	// checking constructor
+	public Player(String userID) {
+		this.userID = userID;
+	}
+	
 	public Player(String userID, String userName) {
 		this.userID = userID;
 		this.name = userName;

@@ -42,21 +42,24 @@ public class Main extends ListenerAdapter {
 				
 				// checking and reading previous players
 				String userFileDir = Globals.filePath + "\\" + user.getId() + ".json";
+				System.out.println("Trying to create file at " + userFileDir);
 				File f = new File(userFileDir);
-				Player userPlayer = new Player(user.getId(), user.getName());
+				Player userPlayer = new Player(user.getId());
 				
 				if(f.exists()) {
 					game.read(userPlayer);
-					game.addPlayer(userPlayer);
+					if(!playerExists(user)) {
+						game.addPlayer(userPlayer);
+					}
 				} else {
-					userPlayer = new Player(user.getId(), user.getName(), new ArrayList<Item>(), 0);
-					game.savePlayer(userPlayer);
-				}
-				
-				// getting a command
-				
-				if(playerExists(user)) {
-					userPlayer = getPlayerByUser(user);
+					if(playerExists(user)) {
+						for(int i = 0; i < players.size(); i++) {
+							if(players.get(i).getUserID().equals(user.getId())) {
+								players.remove(i);
+								return;
+							}
+						}	
+					}
 				}
 				
 				// help
@@ -76,19 +79,18 @@ public class Main extends ListenerAdapter {
 					
 				// register a player
 				if(command.equalsIgnoreCase(Globals.register)) {
-					if(playerExists(user)) {
+					Player player = new Player(user.getId(), user.getName());
+					if(f.exists()) {
+						game.read(player);
+						if(!playerExists(user)) {
+							game.addPlayer(player);
+						}
 						ch.sendMessage(formatString("Player already exists with id " + getPlayerByUser(user).getUserID())).queue();
 						return;
 					} else {
-						ArrayList<Item> inv = new ArrayList<Item>();
-						Player player = userPlayer;
-						try{
-							game.read(player);
-						} catch(Exception e) {
-							e.printStackTrace();
-						}
-						game.addPlayer(player);
+						userPlayer = new Player(user.getId(), user.getName(), new ArrayList<Item>(), 0);
 						game.savePlayer(player);
+						game.addPlayer(player);
 						ch.sendMessage(formatString("Player added!")).queue();
 					}
 				} else 
@@ -123,6 +125,7 @@ public class Main extends ListenerAdapter {
 						players = game.getPlayers();
 						for(int i = 0; i < players.size(); i++) {
 							if(players.get(i).getUserID().equals(user.getId())) {
+								game.killPlayer(players.get(i));
 								players.remove(i);
 								ch.sendMessage(formatString("You killed yourself\nX_X")).queue();
 								return;
@@ -162,8 +165,9 @@ public class Main extends ListenerAdapter {
 				{
 					ch.sendMessage(formatString("Command not found")).queue();
 				}
-				game.savePlayer(userPlayer);
-				game.read(userPlayer);
+				
+				// save everything to player and read it again
+				game.savePlayer(userPlayer); 
 			}
 		}
 		
